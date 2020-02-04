@@ -1,6 +1,7 @@
 
 import { Directive, HostListener, ElementRef } from '@angular/core';
 import { WindowRefService } from './windowReferenceService';
+import { UserAgentService } from './userAgent.service';
 @Directive({
   selector: '[digitOnly]'
 })
@@ -23,7 +24,7 @@ export class InputDirective {
     'Paste'
   ];
 
-  constructor(public el: ElementRef, private windowRef: WindowRefService) {
+  constructor(public el: ElementRef, private windowRef: WindowRefService, private userAgentService: UserAgentService) {
     this.inputElement = el.nativeElement;
   }
 
@@ -55,7 +56,7 @@ export class InputDirective {
     this.pasteData(pastedInput);
   }
 
-  @HostListener('drop', ['$event']) onDrop(event: any) {
+  @HostListener('drop', ['$event']) onDrop(event: DragEvent) {
     event.preventDefault();
     let textData: string;
     if (
@@ -71,7 +72,6 @@ export class InputDirective {
   private pasteData(pastedContent: string): void {
     //Chrome, Opera, Safari, Edge
     const sanitizedContent = this.sanatizeInput(pastedContent);
-    console.log(sanitizedContent, 'sss');
     const pasted = document.execCommand('insertText', false, sanitizedContent);
     if (!pasted) {
       const navigator = this.getNavigator();
@@ -94,8 +94,9 @@ private insertTextIE11(input, newText) {
   //input.selectionStart = input.selectionEnd = start + newText.length
   input.focus()
 }
-  private getNavigator ():string {
-    let sBrowser, sUsrAg = navigator.userAgent;
+  private getNavigator (): string {
+    let sBrowser
+    let sUsrAg = this.userAgentService.getUserAgent();
     if(sUsrAg.indexOf("Chrome") > -1) {
       sBrowser = "Google Chrome";
       } else if (sUsrAg.indexOf("Safari") > -1) {
@@ -104,8 +105,7 @@ private insertTextIE11(input, newText) {
         sBrowser = "Opera";
       } else if (sUsrAg.indexOf("Firefox") > -1) {
         sBrowser = "Mozilla Firefox";
-    }else if(sUsrAg.indexOf('MSIE')!==-1
-|| navigator.appVersion.indexOf('Trident/') > -1) {
+    }else if(sUsrAg.indexOf('MSIE')!==-1  || navigator.appVersion.indexOf('Trident/') > -1) {
   sBrowser = "Microsoft Internet Explorer";
       }
       return sBrowser;
@@ -116,6 +116,8 @@ private insertTextIE11(input, newText) {
     if (maxLength > 0) { // the input element has maxLength limit
       const allowedLength = maxLength - this.inputElement.value.length;
       result = allowedLength > 0 ? result.substring(0, allowedLength) : '';
+    } else {
+      result = result;
     }
     return result;
   }

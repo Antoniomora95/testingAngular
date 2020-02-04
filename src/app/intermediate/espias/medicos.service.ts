@@ -18,9 +18,7 @@ export class MedicosService {
   }
 
   borrarMedico( id: string ) {
-    return this.http.delete('...' )
+    return this.http.delete('...')
     .pipe(map( resp => resp['medico']));
   }
-
-
 }

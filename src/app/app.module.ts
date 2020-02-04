@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { RoutermedicoComponent } from './advanced/routermedico/routermedico.component';
 import { DirectiveComponent } from './advanced/directive/directive.component';
 import { InputDirective } from './advanced/directive/input.directive';
+import { UserAgentService } from './advanced/directive/userAgent.service';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,7 @@ import { InputDirective } from './advanced/directive/input.directive';
     FormsModule,
     RouterModule.forRoot(ROUTES)
   ],
-  providers: [],
+  providers: [UserAgentService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
