@@ -8,6 +8,7 @@ import { not } from '@angular/compiler/src/output/output_ast';
 describe('Incremendator Component', () => {
     let component: IncrementadorComponent;
     let fixture: ComponentFixture<IncrementadorComponent>;
+    let input;
 
     beforeEach( () => {
         TestBed.configureTestingModule({
@@ -16,6 +17,8 @@ describe('Incremendator Component', () => {
         });
         fixture = TestBed.createComponent(IncrementadorComponent);
         component = fixture.componentInstance;
+        fixture.detectChanges();
+        input = fixture.debugElement.query(By.css('input')).nativeElement;
     });
     it('H3 should show the legend', () => {
         const title = 'It is an awesome title';
@@ -55,7 +58,6 @@ describe('Incremendator Component', () => {
 
     it('Click the - button and check the value decreased', () => {
         const buttons = fixture.debugElement.queryAll(By.css('.btn-primary'));
-        const input = fixture.debugElement.query(By.css('input')).nativeElement;
         buttons[0].triggerEventHandler('click', null);
         fixture.detectChanges();
         fixture.whenStable().then(() => {
@@ -64,11 +66,31 @@ describe('Incremendator Component', () => {
     });
     it('Click the + button and check the value added', () => {
         const buttons = fixture.debugElement.queryAll(By.css('.btn-primary'));
-        const input = fixture.debugElement.query(By.css('input')).nativeElement;
         buttons[1].triggerEventHandler('click', null);
         fixture.detectChanges();
         fixture.whenStable().then(() => {
             expect(input.value).toBe('55');
         });
     }); 
+    it('test onchanges 55', () => {
+        component.onChanges(55);
+        fixture.detectChanges();
+        fixture.whenStable().then(() => {
+            expect(input.value).toBe('55');
+        });
+    });
+    it('test onchanges 100', () => {
+        component.onChanges(105);
+        fixture.detectChanges();
+        fixture.whenStable().then(() => {
+            expect(input.value).toBe('100');
+        });
+    });
+    it('test onchanges 0', () => {
+        component.onChanges(-100);
+        fixture.detectChanges();
+        fixture.whenStable().then(() => {
+            expect(input.value).toBe('0');
+        });
+    });
 });
